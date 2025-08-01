@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  wondertrader-dev:
+    image: wondertrader/wondertrader:latest
+    container_name: wondertrader-build
+    volumes:
+      # 挂载本地代码目录到容器中
+      - ./:/home/wondertrader
+      # 挂载依赖库目录
+      - ./docker/mydeps_gcc8.4.0.7z:/tmp/mydeps_gcc8.4.0.7z
+    working_dir: /home/wondertrader
+    tty: true
+    stdin_open: true
+    command: >
+      bash -c "
+        # 解压依赖库到/home目录
+        cd /home && 7za x /tmp/mydeps_gcc8.4.0.7z &&
+        # 保持容器运行，等待编译任务
+        tail -f /dev/null
+      "
+    environment:
+      - TERM=xterm-256color
